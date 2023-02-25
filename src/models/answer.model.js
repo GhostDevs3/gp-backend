@@ -20,4 +20,4 @@ const schema = new Schema({
     },
 });
 
-module.exports = mongoose.model('answer', schema);
+module.exports = mongoose.model('Answer', schema);
