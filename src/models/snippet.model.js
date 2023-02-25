@@ -1,23 +1,27 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const st = Schema.Types;
+const Types = Schema.Types;
 
-const snippetSchema = new Schema({
-    user_id: {
-        type: st.ObjectId(),
+const schema = new Schema({
+    user: {
+        type: Types.ObjectId(),
         ref: 'users',
         required: true,
     },
-    programming_language_id: {
-        type: st.ObjectId(),
+    programming_language: {
+        type: Types.ObjectId(),
         ref: 'programming_languages',
         required: true,
     },
-    content: {
-        title: { type: st.String },
-        body: { type: st.String },
+    title: {
+        type: Types.String,
+        trim: true,
     },
-    views: { type: st.Number },
+    body: {
+        type: Types.String,
+        trim: true,
+    },
+    views: { type: Types.Number },
 });
 
-module.exports = mongoose.model('snippet', snippetSchema);
+module.exports = mongoose.model('Snippet', schema);
