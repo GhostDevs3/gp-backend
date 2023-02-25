@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const st = Schema.Types;
+const Types = Schema.Types;
 
-const watchSchema = new Schema({
-    user_id: {
-        type: st.ObjectId(),
+const schema = new Schema({
+    user: {
+        type: Types.ObjectId(),
         ref: 'users',
         require: true,
     },
-    question_id: {
-        type: st.ObjectId(),
+    question: {
+        type: Types.ObjectId(),
         ref: 'questions',
         require: true,
     },
-    createdDate: { type: st.Date },
-    modifiedDate: { type: st.Date },
-    isActive: { type: st.Boolean },
+    createdDate: { type: Types.Date },
+    modifiedDate: { type: Types.Date },
+    isActive: { type: Types.Boolean },
 });
 
-module.exports = mongoose.model('Watch.model', watchSchema);
+module.exports = mongoose.model('Watch', schema);
