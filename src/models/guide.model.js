@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const st = Schema.Types;
+const Types = Schema.Types;
 
-const guideSchema = new Schema({
-    name: { type: st.String },
-    logo: { type: st.String },
-    refPath: { type: st.String },
+const schema = new Schema({
+    name: {
+        type: Types.String,
+        trim: true,
+    },
+    logo: {
+        type: Types.String,
+        trim: true,
+    },
+    refPath: {
+        type: Types.String,
+        trim: true,
+    },
 });
 
-module.exports = mongoose.model('Guide', guideSchema);
+module.exports = mongoose.model('Guide', schema);
