@@ -16,6 +16,7 @@ const ownBadgeSchema = new Schema({
     isAwarded: {
         type: st.Boolean,
         default: false,
+        require: true,
     },
 });
 
