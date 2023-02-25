@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const st = Schema.Types;
+const Types = Schema.Types;
 
-const ownBadgeSchema = new Schema({
-    user_id: {
-        type: st.ObjectId,
+const schema = new Schema({
+    user: {
+        type: Types.ObjectId,
         ref: 'users',
         require: true,
     },
-    badge_id: {
-        type: st.ObjectId,
+    badge: {
+        type: Types.ObjectId,
         ref: 'users',
         require: true,
     },
     isAwarded: {
-        type: st.Boolean,
+        type: Types.Boolean,
         default: false,
         require: true,
     },
 });
 
-module.exports = mongoose.model('OwnBadge', ownBadgeSchema);
+module.exports = mongoose.model('OwnBadge', schema);
