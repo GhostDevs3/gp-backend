@@ -1,20 +1,23 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const st = Schema.Types;
+const Types = Schema.Types;
 
-const answerSchema = new Schema({
-    user_id: {
-        type: st.ObjectId,
+const schema = new Schema({
+    user: {
+        type: Types.ObjectId,
         ref: 'users',
         required: true,
     },
-    question_id: {
-        type: st.ObjectId,
+    question: {
+        type: Types.ObjectId,
         ref: 'questions',
         required: true,
     },
-    createdDate: { type: st.Date },
-    content: { type: st.String },
+    createdDate: { type: Types.Date },
+    body: {
+        type: Types.String,
+        trim: true,
+    },
 });
 
-module.exports = mongoose.model('answer', answerSchema);
+module.exports = mongoose.model('answer', schema);
