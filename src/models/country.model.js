@@ -17,13 +17,11 @@ const schema = new Schema({
     },
     location: {
         latitude: {
-            type: Types.String,
-            trim: true,
+            type: Types.Number,
+            minLength: 1,
+            maxLength: 100,
         },
-        longitude: {
-            type: Types.String,
-            trim: true,
-        },
+        longitude: { type: Types.Number },
     },
 });
 
