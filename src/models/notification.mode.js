@@ -23,7 +23,10 @@ const schema = new Schema({
         trim: true,
         required: true,
     },
-    link: { type: Types.String },
+    link: {
+        type: Types.String,
+        trim: true,
+    },
     viewed: {
         type: Types.Boolean,
         default: false,
