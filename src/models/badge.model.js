@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const st = Schema.Types;
+const Types = Schema.Types;
 
-const badgeSchema = new Schema({
-    name: { type: st.String },
-    logo: { type: st.String },
-    description: { type: st.String },
+const schema = new Schema({
+    name: {
+        type: Types.String,
+        trim: true,
+    },
+    logo: {
+        type: Types.String,
+        trim: true,
+    },
+    description: {
+        type: Types.String,
+        trim: true,
+    },
 });
 
-module.exports = mongoose.model('Badge', badgeSchema);
+module.exports = mongoose.model('Badge', schema);
