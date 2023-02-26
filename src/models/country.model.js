@@ -18,13 +18,13 @@ const schema = new Schema({
     location: {
         latitude: {
             type: Types.Number,
-            minLength: 6,
-            maxLength: 7,
+            min: 6,
+            max: 7,
         },
         longitude: {
             type: Types.Number,
-            minLength: 6,
-            maxLength: 8,
+            min: 6,
+            max: 8,
         },
     },
 });
