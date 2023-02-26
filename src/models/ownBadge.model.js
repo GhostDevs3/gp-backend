@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Types = Schema.Types;
 
 const schema = new Schema({
-    user: {
+    name: {
         type: Types.ObjectId,
         ref: 'users',
         require: true,
