@@ -8,9 +8,9 @@ const schema = new Schema({
         ref: 'users',
         required: true,
     },
-    programming_language: {
+    programmingLanguage: {
         type: Types.ObjectId(),
-        ref: 'programming_languages',
+        ref: 'programmingLanguages',
         required: true,
     },
     title: {
