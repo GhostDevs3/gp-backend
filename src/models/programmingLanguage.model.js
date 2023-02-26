@@ -5,7 +5,7 @@ const Types = Schema.Types;
 const schema = new Schema({
     snipped: {
         type: Types.ObjectId,
-        ref: "Snipped",
+        ref: "Snippet",
         required: true,
     },
     question: {
@@ -26,15 +26,6 @@ const schema = new Schema({
         type: Types.String,
         trim: true,
     },
-    icon: [
-        {
-            Python: { type: Types.String },
-            C: { type: Types.String },
-            Java: { type: Types.String },
-            JavaScript: { type: Types.String },
-            SQL: { type: Types.String },
-        },
-    ],
     link: { type: Types.String },
 });
 
