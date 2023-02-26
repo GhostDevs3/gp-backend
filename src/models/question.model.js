@@ -5,21 +5,21 @@ const Types = Schema.Types;
 const schema = new Schema({
     user: {
         type: Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true,
     },
     programmingLanguage: {
         type: Types.ObjectId,
-        ref: 'programmingLanguage',
+        ref: 'ProgrammingLanguage',
         required: true,
     },
     answer: {
         type: Types.ObjectId,
-        ref: 'programmingLanguage',
+        ref: 'Answer',
     },
     watch: {
         type: Types.ObjectId,
-        ref: 'watch',
+        ref: 'Watch',
     },
     title: {
         type: Types.String,
