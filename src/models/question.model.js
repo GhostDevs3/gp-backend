@@ -16,10 +16,7 @@ const schema = new Schema({
     answer: {
         type: Types.ObjectId,
         ref: 'Answer',
-    },
-    watch: {
-        type: Types.ObjectId,
-        ref: 'Watch',
+        required: true,
     },
     title: {
         type: Types.String,
@@ -32,7 +29,7 @@ const schema = new Schema({
         trim: true,
     },
     date: { type: Types.Date },
-    tag: [{ type: Types.String }],
+    tag: [{ type: Types.String, trim: true }],
 });
 
 module.exports = mongoose.model('Question', schema);
