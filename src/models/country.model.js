@@ -7,22 +7,26 @@ const schema = new Schema({
         type: Types.String,
         trim: true,
     },
-    ISO_code: {
+    ISOCode: {
         type: Types.String,
         trim: true,
     },
-    phone_prefix: {
+    phonePrefix: {
         type: Types.String,
         trim: true,
     },
     location: {
         latitude: {
             type: Types.Number,
-            minLength: 1,
-            maxLength: 100,
+            minLength: 6,
+            maxLength: 7,
         },
-        longitude: { type: Types.Number },
+        longitude: {
+            type: Types.Number,
+            minLength: 6,
+            maxLength: 8,
+        },
     },
 });
 
-module.exports = mongoose.model('country', schema);
+module.exports = mongoose.model('Country', schema);
