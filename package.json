@@ -1,4 +1,25 @@
 {
+
+  "name": "gp-backend",
+  "version": "1.0.0",
+  "description": "nuestro super backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "contributors": [
+    {
+    "name": "Veronika",
+    "email": "vsc1972@gmail.com",
+    "url": "https://github.com/VkaSC"
+  },
+  {
+    "name": "iRaphiki",
+    "email": "",
+    "url": ""
+  }],
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
