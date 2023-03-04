@@ -94,7 +94,9 @@ class MongoConector {
                 return undefined;
             }
             return docs;
-        } catch (err) {}
+        } catch (err) {
+            throw err;
+        }
     }
 
     static async update(model, query, data) {
