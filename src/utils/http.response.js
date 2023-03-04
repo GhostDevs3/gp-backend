@@ -63,11 +63,11 @@ class HTTPResponse {
         });
     }
 
-    conflict(message, data) {
+    conflict(message, status, data) {
         return res.status(HTTPCodes.CONFLICT).json({
             success: false,
             message: message,
-            status: 'CONFLICT',
+            status: status,
             data: data,
             error: undefined,
         });
@@ -78,7 +78,7 @@ class HTTPResponse {
             success: false,
             message: message,
             status: status,
-            data: data,
+            data: null,
             error: error,
         });
     }
