@@ -2,7 +2,7 @@ const { Model } = require('mongoose');
 
 const QUERY_PARAMS = ['sort', 'fields', 'populate', 'size', 'page', 'logic'];
 
-const OPERATOR = {
+const OPERATORS = {
     $gt: (value) => {
         return { $gt: value };
     },
@@ -88,10 +88,8 @@ class MongoConector {
 
     static async create(model, data) {
         try {
-            const queryObject = model.create(data);
-            buildQuery(queryObject, query);
-
-            const docs = await queryObject.exec();
+            const objectToCreate = new model(data);
+            const docs = await objectToCreate.save();
             if (!docs) {
                 return undefined;
             }
