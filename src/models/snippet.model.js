@@ -5,12 +5,12 @@ const Types = Schema.Types;
 const schema = new Schema({
     user: {
         type: Types.ObjectId(),
-        ref: 'users',
+        ref: 'Users',
         required: true,
     },
     programmingLanguage: {
         type: Types.ObjectId(),
-        ref: 'programmingLanguages',
+        ref: 'ProgrammingLanguages',
         required: true,
     },
     title: {

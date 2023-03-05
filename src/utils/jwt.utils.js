@@ -5,7 +5,7 @@ const CONFIG = require("../config/config");
 class JWTUtils {
     //static variables to standardize the errors that can be thrown
     static EXPIRED_ERROR = 'TokenExpiredError';
-    static MALFORMED_ERRO = 'JsonWebTokenError';
+    static MALFORMED_ERROR = 'JsonWebTokenError';
     static UNKNOWN_ERROR = 'UnknownError';
 
     static createAuthToken(payload) {
@@ -81,7 +81,7 @@ function validateToken(token, signature) {
         results.success = true;
         results.payload = payload;
     } catch (error) {
-        if (error.name === JWTUtils.EXPIRED_ERROR || error.name === JWTUtils.MALFORMED_ERRO) {
+        if (error.name === JWTUtils.EXPIRED_ERROR || error.name === JWTUtils.MALFORMED_ERROR) {
             results.reason = error.name;
         } else {
             results.reason = JWTUtils.UNKNOWN_ERROR;

@@ -5,12 +5,12 @@ const Types = Schema.Types;
 const schema = new Schema({
     user: {
         type: Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         require: true,
     },
     badge: {
         type: Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         require: true,
     },
     isAwarded: {

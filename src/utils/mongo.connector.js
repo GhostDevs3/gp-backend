@@ -38,7 +38,7 @@ const OPERATORS = {
     },
 };
 
-class MongoConector {
+class MongoConnector {
     static async find(model, query) {
         try {
             const queryConditions = getQueryConditions(model, query);
@@ -194,7 +194,7 @@ class MongoConector {
     }
 }
 
-module.exports = MongoConector;
+module.exports = MongoConnector;
 
 function buildQuery(mongoQuery, query) {
     if (query && Object.keys(query).length > 0) {

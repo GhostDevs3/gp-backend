@@ -5,12 +5,12 @@ const Types = Schema.Types;
 const schema = new Schema({
     user: {
         type: Types.ObjectId(),
-        ref: 'users',
+        ref: 'User',
         require: true,
     },
     question: {
         type: Types.ObjectId(),
-        ref: 'questions',
+        ref: 'Question',
         require: true,
     },
     createdDate: { type: Types.Date },

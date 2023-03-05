@@ -1,7 +1,7 @@
 const HTTPCodes = {
     SUCCESS: 200,
     BAD_REQUEST: 400,
-    UNATHORIZED: 401,
+    UNAUTHORIZED: 401,
     FORBIDDEN: 403,
     NOT_FOUND: 404,
     CONFLICT: 409,
@@ -34,10 +34,10 @@ class HTTPResponse {
     }
 
     unauthorized(message, data) {
-        return res.status(HTTPCodes.UNATHORIZED).json({
+        return res.status(HTTPCodes.UNAUTHORIZED).json({
             success: false,
             message: message,
-            status: 'UNATHORIZED',
+            status: 'UNAUTHORIZED',
             data: data,
             error: undefined,
         });
