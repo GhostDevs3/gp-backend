@@ -1,6 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { JWT_LOGIN_SECRET } = require("../config/config");
-const CONFIG = require("../config/config");
+const jwt = require('jsonwebtoken');
+const CONFIG = require('../config/config');
 
 class JWTUtils {
     //static variables to standardize the errors that can be thrown
@@ -51,37 +50,39 @@ class JWTUtils {
 
 module.exports = JWTUtils;
 
-
 /**
  * Function to generate tokens
- * @param {*} payload 
+ * @param {*} payload
  * @param {string} signature Signature created for that specific token
  * @param {*} expiresIn Token validity time
  * @returns a token
  */
 function generateToken(payload, signature, expiresIn) {
-    return jwt.sign(payload, signature, {expiresIn: expiresIn});
+    return jwt.sign(payload, signature, { expiresIn: expiresIn });
 }
 
 /**
- * 
- * @param {*} token 
+ *
+ * @param {*} token
  * @param {string} signature Signature created for that specific token
  * @returns an object with the validation and the payload if it is valid or the errors and the reason for it if not
  */
 function validateToken(token, signature) {
-    const results ={
+    const results = {
         success: false,
         payload: undefined,
         reason: undefined,
-        error: undefined
-    }
+        error: undefined,
+    };
     try {
         const payload = jwt.verify(token, signature);
         results.success = true;
         results.payload = payload;
     } catch (error) {
-        if (error.name === JWTUtils.EXPIRED_ERROR || error.name === JWTUtils.MALFORMED_ERROR) {
+        if (
+            error.name === JWTUtils.EXPIRED_ERROR ||
+            error.name === JWTUtils.MALFORMED_ERROR
+        ) {
             results.reason = error.name;
         } else {
             results.reason = JWTUtils.UNKNOWN_ERROR;
