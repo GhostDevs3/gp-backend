@@ -5,12 +5,12 @@ const Types = Schema.Types;
 const schema = new Schema({
     sender: {
         type: Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true,
     },
     receiver: {
         type: Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true,
     },
     subject: {
