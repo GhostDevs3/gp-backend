@@ -11,7 +11,7 @@ const schema = new Schema({
         ref: 'User',
         required: true,
     },
-    CSSFontPaletteValuesRule: {
+    value: {
         type: Types.String,
         trim: true,
         required: true,
