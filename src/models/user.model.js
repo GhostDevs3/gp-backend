@@ -1,14 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Types = Schema.Types;
 
 const schema = new Schema({
-    username: { type: Types.String, unique: true, required: true },
+    username: {
+        type: Types.String,
+        unique: true,
+        required: true,
+        trim: true,
+    },
     role: {
         type: Schema.Types.String,
         required: true,
-        enum: ["user", "admin"],
+        enum: ['user', 'admin'],
+        trim: true,
     },
     email: {
         type: Types.String,
@@ -20,28 +26,78 @@ const schema = new Schema({
         uniqueCaseInsensitive: true,
         lowercase: true,
     },
-    phone: { type: Types.String, minlength: 9, maxlength: 9 },
-    website: { type: Types.String },
-    about: { type: Types.String },
-    avatar: { type: Types.String },
-    coverImg: { type: Types.String },
+    password: {
+        type: Types.String,
+        trim: true,
+    },
+    phone: {
+        type: Types.String,
+        minlength: 9,
+        maxlength: 9,
+    },
+    website: {
+        type: Types.String,
+        trim: true,
+    },
+    about: {
+        type: Types.String,
+        trim: true,
+    },
+    avatar: {
+        type: Types.ObjectId,
+        ref: 'Image',
+    },
+    coverImg: {
+        type: Types.ObjectId,
+        ref: 'Image',
+    },
     personalInfo: {
-        name: { type: Types.String },
-        birthDate: { type: Types.Date },
-        country: { type: Schema.Types.ObjectId, ref: "country" },
+        name: {
+            type: Types.String,
+            trim: true,
+        },
+        birthDate: {
+            type: Types.Date,
+        },
+        country: {
+            type: Schema.Types.ObjectId,
+            ref: 'Country',
+        },
     },
     links: {
-        GitHub:{type: Types.String},
-        Twitter:{type: Types.String},
-        Linkedin:{type: Types.String},
-        Youtube:{type: Types.String}
+        GitHub: {
+            type: Types.String,
+            trim: true,
+        },
+        Twitter: {
+            type: Types.String,
+            trim: true,
+        },
+        Linkedin: {
+            type: Types.String,
+            trim: true,
+        },
+        Youtube: {
+            type: Types.String,
+            trim: true,
+        },
     },
-    active:{type: Types.Boolean, default: false, required: true},
-    activationDate:{type: Types.Date},
-    blocked:{type: Types.Boolean, default: false, required: true},
-    languages: [{
-        required: false, 
-        ref:'programmingLanguaje'
-    }]
+    active: {
+        type: Types.Boolean,
+        default: false,
+        required: true,
+    },
+    activationDate: { type: Types.Date },
+    blocked: {
+        type: Types.Boolean,
+        default: false,
+        required: true,
+    },
+    languages: [
+        {
+            type: Types.ObjectId,
+            ref: 'ProgrammingLanguage',
+        },
+    ],
 });
 module.exports = mongoose.model('User', schema);

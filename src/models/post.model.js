@@ -5,7 +5,7 @@ const Types = Schema.Types;
 const schema = new Schema({
     user_id: {
         type: Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
         required: true,
     },
     title: {
