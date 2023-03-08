@@ -38,10 +38,12 @@ class AuthController extends StandardController {
 					password,
 				});
 			}
+
 			// Checking if the user already exists.
 			const user = await MongoConnector.findOne(userModel, {
 				email: email,
 			});
+
 			if (user) {
 				return response.conflict(
 					'User already exists.',
@@ -49,6 +51,7 @@ class AuthController extends StandardController {
 					undefined,
 				);
 			}
+
 			// Checking if the password match with passwords rules.
 			if (password) {
 				const result = PasswordUtils.eval(password);
@@ -60,6 +63,7 @@ class AuthController extends StandardController {
 					);
 				}
 			}
+
 			// Create a new user hashing the password.
 			const newUser = await MongoConnector.create(userModel, {
 				username: username,
@@ -75,6 +79,7 @@ class AuthController extends StandardController {
 			};
 			// Generate activate token.
 			const activationToken = JWTUtils.createActivateToken(payload);
+
 			// Once the activation token is created, we need to save it in the token collection.
 			const newActivateToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
@@ -83,11 +88,13 @@ class AuthController extends StandardController {
 				expiresIn: activationToken.expiresIn,
 				issuedAt: new Date(),
 			});
-			// TODO: URL /auth/activate/:token
+
+			// Build the URL for the activation token
 			const activateURL = `${CONFIG.FRONTEND_URL}/auth/activate/${activationToken.token}`;
 
 			// Generate revoke token.
 			const revokeToken = JWTUtils.createRevokeToken(payload);
+
 			// Once the revoke token is created, we need to save it in the token collection.
 			const newRevokeToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
@@ -96,8 +103,12 @@ class AuthController extends StandardController {
 				expiresIn: revokeToken.expiresIn,
 				issuedAt: new Date(),
 			});
-			// TODO: URL /auth/revoke/:token
+
+			// Build the URL for the revoke token
 			const revokeURL = `${CONFIG.FRONTEND_URL}/auth/revoke/${revokeToken.token}`;
+
+			// TODO: Send welcome email with both URLs as links.
+			// ? https://www.npmjs.com/package/nodemailer ToResearch
 
 			// Response 201 - OK
 			response.created('OK');
