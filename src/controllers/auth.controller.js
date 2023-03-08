@@ -1,5 +1,5 @@
 /**
- * @author iRaphiki
+ * @author Rafa Fernandez <imraphiki@gmail.com>
  * @modified
  */
 import HTTPResponse from '../utils/http.response';
@@ -10,6 +10,7 @@ import { tokenModel } from '../models/token.model';
 import PasswordUtils from '../utils/password.utils';
 import CryptoUtils from '../utils/crypto.utils';
 import JWTUtils from '../utils/jwt.utils';
+import DateUtils from '../utils/date.utils';
 
 class AuthController extends StandardController {
 	/**
@@ -67,15 +68,18 @@ class AuthController extends StandardController {
 				password: CryptoUtils.hash(password),
 			});
 			// Create active token for the new user.
-			const activationToken = JWTUtils.createActivateToken(/*HERE*/); // TODO: add payload here
-
+			const activationToken = JWTUtils.createActivateToken({
+				username: username,
+				email: email,
+				password: CryptoUtils.hash(password),
+			});
 			// Once the token is created, we need to save it in the token collection.
 			const newTokens = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
 				value: activationToken,
 				type: 'activate',
-				expiredIn: new Date(), // TODO: use dateUtils to check expiration date
-				issuedAt: new Date(), // TODO: use dateUtils to check issuedAt date
+				expiredIn: DateUtils.daysToMilliseconds(3),
+				issuedAt: new Date(),
 			});
 		} catch (err) {
 			console.log(err);
