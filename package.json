@@ -1,35 +1,72 @@
 {
 
   "name": "gp-backend",
+
   "version": "1.0.0",
+
   "description": "nuestro super backend",
+
   "main": "index.js",
+
   "scripts": {
+
     "start": "node index.js",
+
     "dev": "nodemon index.js",
+
     "test": "echo \"Error: no test specified\" && exit 1"
+
   },
+
   "contributors": [
+
     {
-    "name": "Veronika",
-    "email": "vsc1972@gmail.com",
-    "url": "https://github.com/VkaSC"
-  },
-  {
-    "name": "iRaphiki",
-    "email": "",
-    "url": ""
-  }],
+
+      "name": "Veronika",
+
+      "email": "vsc1972@gmail.com",
+
+      "url": "https://github.com/VkaSC"
+
+    },
+
+    {
+
+      "name": "iRaphiki",
+
+      "email": "",
+
+      "url": ""
+
+    }
+
+  ],
+
   "dependencies": {
+
     "bcrypt": "^5.1.0",
+
     "cors": "^2.8.5",
+
     "dotenv": "^16.0.3",
+
     "express": "^4.18.2",
+
     "jsonwebtoken": "^9.0.0",
+
     "mongoose": "^6.10.0",
-    "multer": "^1.4.5-lts.1"
+
+    "multer": "^1.4.5-lts.1",
+
+    "nodemailer": "^6.9.1"
+
   },
+
   "devDependencies": {
+
     "nodemon": "^2.0.20"
+
   }
+
 }
+
