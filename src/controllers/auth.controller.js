@@ -10,7 +10,6 @@ import { tokenModel } from '../models/token.model';
 import PasswordUtils from '../utils/password.utils';
 import CryptoUtils from '../utils/crypto.utils';
 import JWTUtils from '../utils/jwt.utils';
-import DateUtils from '../utils/date.utils';
 
 class AuthController extends StandardController {
 	/**
@@ -67,22 +66,40 @@ class AuthController extends StandardController {
 				email: email,
 				password: CryptoUtils.hash(password),
 			});
-			// Create active token for the new user.
-			const activationToken = JWTUtils.createActivateToken({
+			// With the new user created, we can save the payload.
+			const payload = {
 				username: username,
 				email: email,
 				password: CryptoUtils.hash(password),
-			});
-			// Once the token is created, we need to save it in the token collection.
-			const newTokens = await MongoConnector.create(tokenModel, {
+			};
+			// Generate activate token.
+			const activationToken = JWTUtils.createActivateToken(payload);
+			// Once the activation token is created, we need to save it in the token collection.
+			const newActivateToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
 				value: activationToken,
 				type: 'activate',
-				expiredIn: DateUtils.daysToMilliseconds(3),
+				expiresIn: activationToken.expiresIn,
 				issuedAt: new Date(),
 			});
+			// TODO: URL /auth/activate/:token
+
+			// Generate revoke token.
+			const revokeToken = JWTUtils.createRevokeToken(payload);
+			// Once the revoke token is created, we need to save it in the token collection.
+			const newRevokeToken = await MongoConnector.create(tokenModel, {
+				user: newUser._id,
+				value: revokeToken,
+				type: 'revoke',
+				expiresIn: revokeToken.expiresIn,
+				issuedAt: new Date(),
+			});
+			// TODO: URL /auth/revoke/:token
+
+			// Response 200
+			response.created('OK');
 		} catch (err) {
-			console.log(err);
+			response.error(err);
 		}
 	}
 }

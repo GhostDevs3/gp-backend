@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const CONFIG = require('../config/config');
-const dateUtils = require('../utils/date.utils');
+const DateUtils = require('./date.Utils');
+const { inMilliseconds } = require('./date.Utils');
 
 class JWTUtils {
 	//static variables to standardize the errors that can be thrown
@@ -12,7 +13,7 @@ class JWTUtils {
 		return generateToken(
 			payload,
 			CONFIG.JWT_LOGIN_SECRET,
-			dateUtils.daysToMilliseconds(3),
+			DateUtils.inMilliseconds('1d'),
 		);
 	}
 
@@ -20,32 +21,20 @@ class JWTUtils {
 		return generateToken(
 			payload,
 			CONFIG.JWT_REFRESH_SECRET,
-			dateUtils.daysToMilliseconds(90),
+			DateUtils.monthsToMilliseconds(3),
 		);
 	}
 
 	static createRevokeToken(payload) {
-		return generateToken(
-			payload,
-			CONFIG.JWT_REVOKE_SECRET,
-			dateUtils.daysToMilliseconds(3),
-		);
+		return generateToken(payload, CONFIG.JWT_REVOKE_SECRET, '3d');
 	}
 
 	static createRecoveryToken(payload) {
-		return generateToken(
-			payload,
-			CONFIG.JWT_RECOVERY_SECRET,
-			dateUtils.daysToMilliseconds(1),
-		);
+		return generateToken(payload, CONFIG.JWT_RECOVERY_SECRET, '1d');
 	}
 
 	static createActivateToken(payload) {
-		return generateToken(
-			payload,
-			CONFIG.JWT_ACTIVATE_SECRET,
-			dateUtils.daysToMilliseconds(3),
-		);
+		return generateToken(payload, CONFIG.JWT_ACTIVATE_SECRET, '3d');
 	}
 
 	static validateAuthToken(token) {
@@ -79,9 +68,10 @@ module.exports = JWTUtils;
  * @returns a token
  */
 function generateToken(payload, signature, expiresIn) {
+	// TODO: use the dataUtils function to generate expired dates
 	const data = {
 		token: jwt.sign(payload, signature, { expiresIn: expiresIn }),
-		expiresIn: expiresIn,
+		expiresIn: new Date(new Date().getTime() + expiresIn),
 		issuedAt: new Date(),
 	};
 

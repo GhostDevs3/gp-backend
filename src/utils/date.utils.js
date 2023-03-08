@@ -26,6 +26,31 @@ class DateUtils {
 	static monthsToMilliseconds(months) {
 		return DateUtils.daysToMilliseconds(months * 30);
 	}
+	/**
+	 * Convert a time expression like '1d','1h','3m' to milliseconds
+	 * @param { String } time seconds
+	 * @returns number of milliseconds
+	 */
+	static inMilliseconds(time) {
+		const digitRegex = /\d+/g; // Regex for digit
+		const letterRegex = /\D+/g; // Regex for letter
+		switch (letterRegex.exec(time)) {
+			case 'ms':
+				return digitRegex.exec(time);
+			case 's':
+				return DateUtils.secondsToMilliseconds(digitRegex.exec(time));
+			case 'mn':
+				return DateUtils.minutesToMilliseconds(digitRegex.exec(time));
+			case 'h':
+				return DateUtils.hoursToMilliseconds(digitRegex.exec(time));
+			case 'd':
+				return DateUtils.daysToMilliseconds(digitRegex.exec(time));
+			case 'm':
+				return DateUtils.monthsToMilliseconds(digitRegex.exec(time));
+			default:
+				console.log('Invalid token time expression: ' + time);
+		}
+	}
 }
 
 module.exports = DateUtils;
