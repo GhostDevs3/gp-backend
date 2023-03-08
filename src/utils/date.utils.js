@@ -3,7 +3,7 @@
  */
 /**
  * Class Date utils to handler date timestamp.
- * Covert the seconds, minutes, hours and days into a milliseconds.
+ * Covert the seconds, minutes, hours, days and months into a milliseconds.
  */
 class DateUtils {
 	// Multiply the seconds to convert to milliseconds
@@ -21,6 +21,10 @@ class DateUtils {
 	// Convert days into hours to use hoursToMilliseconds method.
 	static daysToMilliseconds(days) {
 		return DateUtils.hoursToMilliseconds(days * 24);
+	}
+	// Convert months into days to use daysToMilliseconds method.
+	static monthsToMilliseconds(months) {
+		return DateUtils.daysToMilliseconds(months * 30);
 	}
 }
 
