@@ -117,3 +117,4 @@ class StandardController {
         }
     }
 }
+module.exports = StandardController;
