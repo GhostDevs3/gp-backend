@@ -21,20 +21,32 @@ class JWTUtils {
 		return generateToken(
 			payload,
 			CONFIG.JWT_REFRESH_SECRET,
-			DateUtils.monthsToMilliseconds(3),
+			DateUtils.inMilliseconds('3m'),
 		);
 	}
 
 	static createRevokeToken(payload) {
-		return generateToken(payload, CONFIG.JWT_REVOKE_SECRET, '3d');
+		return generateToken(
+			payload,
+			CONFIG.JWT_REVOKE_SECRET,
+			DateUtils.inMilliseconds('3d'),
+		);
 	}
 
 	static createRecoveryToken(payload) {
-		return generateToken(payload, CONFIG.JWT_RECOVERY_SECRET, '1d');
+		return generateToken(
+			payload,
+			CONFIG.JWT_RECOVERY_SECRET,
+			DateUtils.inMilliseconds('1d'),
+		);
 	}
 
 	static createActivateToken(payload) {
-		return generateToken(payload, CONFIG.JWT_ACTIVATE_SECRET, '3d');
+		return generateToken(
+			payload,
+			CONFIG.JWT_ACTIVATE_SECRET,
+			DateUtils.inMilliseconds('3d'),
+		);
 	}
 
 	static validateAuthToken(token) {
