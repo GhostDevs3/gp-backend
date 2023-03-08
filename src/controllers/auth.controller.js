@@ -10,6 +10,7 @@ import { tokenModel } from '../models/token.model';
 import PasswordUtils from '../utils/password.utils';
 import CryptoUtils from '../utils/crypto.utils';
 import JWTUtils from '../utils/jwt.utils';
+import CONFIG from '../config/config';
 
 class AuthController extends StandardController {
 	/**
@@ -77,26 +78,28 @@ class AuthController extends StandardController {
 			// Once the activation token is created, we need to save it in the token collection.
 			const newActivateToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
-				value: activationToken,
+				value: activationToken.token,
 				type: 'activate',
 				expiresIn: activationToken.expiresIn,
 				issuedAt: new Date(),
 			});
 			// TODO: URL /auth/activate/:token
+			const activateURL = `${CONFIG.FRONTEND_URL}/auth/activate/${activationToken.token}`;
 
 			// Generate revoke token.
 			const revokeToken = JWTUtils.createRevokeToken(payload);
 			// Once the revoke token is created, we need to save it in the token collection.
 			const newRevokeToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
-				value: revokeToken,
+				value: revokeToken.token,
 				type: 'revoke',
 				expiresIn: revokeToken.expiresIn,
 				issuedAt: new Date(),
 			});
 			// TODO: URL /auth/revoke/:token
+			const revokeURL = `${CONFIG.FRONTEND_URL}/auth/revoke/${revokeToken.token}`;
 
-			// Response 200
+			// Response 201 - OK
 			response.created('OK');
 		} catch (err) {
 			response.error(err);
