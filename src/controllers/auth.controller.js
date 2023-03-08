@@ -12,70 +12,73 @@ import CryptoUtils from '../utils/crypto.utils';
 import JWTUtils from '../utils/jwt.utils';
 
 class AuthController extends StandardController {
-    /**
-     * @constructor using user model into super constructor.
-     */
-    constructor() {
-        super(userModel);
-    }
+	/**
+	 * @constructor using user model into super constructor.
+	 */
+	constructor() {
+		super(userModel);
+	}
 
-    /**
-     * Method signup to check the information and if it correct, create a new user.
-     * @param { import('express').Request } req
-     * @param { import('express').Response } res
-     * @returns code 201
-     */
-    async signup(req, res) {
-        const response = new HTTPResponse(res);
-        try {
-            //  Checking if the fields have data.
-            const { username, email, password } = req.body;
-            if (!username || !email || !password) {
-                return response.badRequest(
-                    'Wrong user data',
-                    'USER_DATA_EMPTY',
-                    { username, email, password },
-                );
-            }
-            // Checking if the user already exists.
-            const user = await MongoConnector.findOne(userModel, {
-                email: email,
-            });
-            if (user) {
-                return response.conflict(
-                    'User already exists.',
-                    'USER_ALREADY_EXISTS',
-                    undefined,
-                );
-            }
-            // Checking if the password match with passwords rules.
-            if (password) {
-                const result = PasswordUtils.eval(password);
-                if (result.length > 0) {
-                    return response.badRequest(
-                        'Wrong password rules',
-                        'WRONG_PASSWORD_RULES',
-                        result,
-                    );
-                }
-            }
-            const newUser = await MongoConnector.create(userModel, {
-                username: username,
-                role: 'user',
-                email: email,
-                password: CryptoUtils.hash(password),
-            });
-            const activationToken = JWTUtils.createActivateToken();
+	/**
+	 * Method signup to check the information and if it correct, create a new user.
+	 * @param { import('express').Request } req
+	 * @param { import('express').Response } res
+	 * @returns code 201
+	 */
+	async signup(req, res) {
+		const response = new HTTPResponse(res);
+		try {
+			//  Checking if the fields have data.
+			const { username, email, password } = req.body;
+			if (!username || !email || !password) {
+				return response.badRequest('Wrong user data', 'USER_DATA_EMPTY', {
+					username,
+					email,
+					password,
+				});
+			}
+			// Checking if the user already exists.
+			const user = await MongoConnector.findOne(userModel, {
+				email: email,
+			});
+			if (user) {
+				return response.conflict(
+					'User already exists.',
+					'USER_ALREADY_EXISTS',
+					undefined,
+				);
+			}
+			// Checking if the password match with passwords rules.
+			if (password) {
+				const result = PasswordUtils.eval(password);
+				if (result.length > 0) {
+					return response.badRequest(
+						'Wrong password rules',
+						'WRONG_PASSWORD_RULES',
+						result,
+					);
+				}
+			}
+			// Create a new user hashing the password.
+			const newUser = await MongoConnector.create(userModel, {
+				username: username,
+				role: 'user',
+				email: email,
+				password: CryptoUtils.hash(password),
+			});
+			// Create active token for the new user.
+			const activationToken = JWTUtils.createActivateToken(/*HERE*/); // TODO: add payload here
 
-            const newTokens = await MongoConnector.create(tokenModel, {
-                user: newUser._id,
-                value: activationToken,
-                type: 'activate',
-                expiredIn: '',
-                issuedAt: '',
-            });
-        } catch (err) {
-            console.log(err);
-        }
-    }
+			// Once the token is created, we need to save it in the token collection.
+			const newTokens = await MongoConnector.create(tokenModel, {
+				user: newUser._id,
+				value: activationToken,
+				type: 'activate',
+				expiredIn: new Date(), // TODO: use dateUtils to check expiration date
+				issuedAt: new Date(), // TODO: use dateUtils to check issuedAt date
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	}
 }
