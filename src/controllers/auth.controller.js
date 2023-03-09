@@ -2,6 +2,7 @@
  * @author Rafa Fernandez <imraphiki@gmail.com>
  * @modified
  */
+import CONFIG from '../config/config';
 import HTTPResponse from '../utils/http.response';
 import MongoConnector from '../utils/mongo.connector';
 import StandardController from './standard.controller';
@@ -10,7 +11,7 @@ import { tokenModel } from '../models/token.model';
 import PasswordUtils from '../utils/password.utils';
 import CryptoUtils from '../utils/crypto.utils';
 import JWTUtils from '../utils/jwt.utils';
-import CONFIG from '../config/config';
+import Mailer from '../utils/nodemailer.util';
 
 class AuthController extends StandardController {
 	/**
@@ -107,11 +108,30 @@ class AuthController extends StandardController {
 			// Build the URL for the revoke token
 			const revokeURL = `${CONFIG.FRONTEND_URL}/auth/revoke/${revokeToken.token}`;
 
-			// TODO: Send welcome email with both URLs as links.
-			// ? https://www.npmjs.com/package/nodemailer ToResearch
+			/**
+			 * Using nodemailer to send an email notification with both tokens,
+			 * activate and revoke.
+			 */
+			const mailer = new Mailer();
+			const subject = `Welcome to DevsGhost3 ${user}.`;
+			const body = `
+					<h2>Test Sign Up mail</h2>
+					<p>Resend me and email if you recieve this message.</p>
+					<button>ACTIVATE ACCOUNT</button> // ! TODO template class 
+					<button>REVOKE ACCOUNT</button>
+				`;
+			await mailer.send(email, subject, body);
 
 			// Response 201 - OK
 			response.created('OK');
+		} catch (err) {
+			response.error(err);
+		}
+	}
+
+	async login(req, res) {
+		const response = new HTTPResponse(res);
+		try {
 		} catch (err) {
 			response.error(err);
 		}
