@@ -9,7 +9,7 @@ import StandardController from './standard.controller';
 import { userModel } from '../models/user.model';
 import { tokenModel } from '../models/token.model';
 import PasswordUtils from '../utils/password.utils';
-import CryptoUtils from '../utils/crypto.utils';
+import { match, hash } from '../utils/crypto.utils';
 import JWTUtils from '../utils/jwt.utils';
 import Mailer from '../utils/nodemailer.util';
 
@@ -30,8 +30,8 @@ class AuthController extends StandardController {
 	async signup(req, res) {
 		const response = new HTTPResponse(res);
 		try {
-			//  Checking if the fields have data.
 			const { username, email, password } = req.body;
+			//  Checking if the fields have data.
 			if (!username || !email || !password) {
 				return response.badRequest('Wrong user data', 'USER_DATA_EMPTY', {
 					username,
@@ -70,24 +70,20 @@ class AuthController extends StandardController {
 				username: username,
 				role: 'user',
 				email: email,
-				password: CryptoUtils.hash(password),
+				password: hash(password),
 			});
-			// With the new user created, we can save the payload.
-			const payload = {
-				username: username,
-				email: email,
-				password: CryptoUtils.hash(password),
-			};
+			// Create payload object from new user
+			const payload = JWTUtils.genAuthPayload(newUser);
 			// Generate activate token.
 			const activationToken = JWTUtils.createActivateToken(payload);
 
-			// Once the activation token is created, we need to save it in the token collection.
+			// Once the activation token is created, we save it
 			const newActivateToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
 				value: activationToken.token,
 				type: 'activate',
 				expiresIn: activationToken.expiresIn,
-				issuedAt: new Date(),
+				issuedAt: activationToken.issuedAt,
 			});
 
 			// Build the URL for the activation token
@@ -96,13 +92,13 @@ class AuthController extends StandardController {
 			// Generate revoke token.
 			const revokeToken = JWTUtils.createRevokeToken(payload);
 
-			// Once the revoke token is created, we need to save it in the token collection.
+			// Once the revoke token is created, we save it
 			const newRevokeToken = await MongoConnector.create(tokenModel, {
 				user: newUser._id,
 				value: revokeToken.token,
 				type: 'revoke',
 				expiresIn: revokeToken.expiresIn,
-				issuedAt: new Date(),
+				issuedAt: revokeToken.issuedAt,
 			});
 
 			// Build the URL for the revoke token
@@ -117,13 +113,22 @@ class AuthController extends StandardController {
 			const body = `
 					<h2>Test Sign Up mail</h2>
 					<p>Resend me and email if you recieve this message.</p>
-					<button>ACTIVATE ACCOUNT</button> // ! TODO template class 
-					<button>REVOKE ACCOUNT</button>
+					<a href=${activateURL}>ACTIVATE ACCOUNT</a> 
+					<a href=${revokeURL}>REVOKE ACCOUNT</a>
 				`;
+			// Sending mail
 			await mailer.send(email, subject, body);
 
-			// Response 201 - OK
-			response.created('OK');
+			// If both tokens are not created, send error 500
+			if (!newActivateToken && !newRevokeToken) {
+				return response.error(
+					'Token generation failed',
+					'TOKEN_EROR',
+					undefined,
+				);
+			}
+			// If both tokens are created, send 201
+			return response.created('OK');
 		} catch (err) {
 			response.error(err);
 		}
@@ -132,6 +137,81 @@ class AuthController extends StandardController {
 	async login(req, res) {
 		const response = new HTTPResponse(res);
 		try {
+			//  Checking if the fields have data.
+			const { usernameOrEmail, password } = req.body;
+			if (!usernameOrEmail || !password) {
+				return response.badRequest('Wrong user data', 'USER_DATA_EMPTY', {
+					usernameOrEmail,
+					password,
+				});
+			}
+
+			/**
+			 * Check user input data
+			 * Search usernameOrEmail matches into database
+			 */
+			const user = await MongoConnector.findOne(userModel, {
+				$or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+			});
+
+			// If user isn't instance, response not found 404.
+			if (!user) {
+				return response.notFound('User not found.', undefined);
+			}
+
+			// If don't match the encrypted passwords, response unauthorized 403.
+			if (!match(password, user.password)) {
+				return response.unauthorized('Wrong password.', undefined);
+			}
+
+			// If user is not active, response conflict 409.
+			if (!user.isActive()) {
+				return response.conflict('User is not active.', undefined);
+			}
+
+			// If user is blocked, response conflict 409.
+			if (user.isBlocked()) {
+				return response.conflict('User is blocked.', undefined);
+			}
+
+			// All right with the user data
+			// Create payload object from login user data
+			const payload = JWTUtils.genAuthPayload(user);
+
+			// Generate access token.
+			const accessToken = JWTUtils.createAuthToken(payload);
+
+			// Once the access token is created, we save it
+			const newAccessToken = await MongoConnector.create(tokenModel, {
+				user: user._id,
+				value: accessToken.token,
+				type: 'access',
+				expiresIn: accessToken.expiresIn,
+				issuedAt: accessToken.issuedAt,
+			});
+
+			// Generate refresh token.
+			const refreshToken = JWTUtils.createRefreshToken(payload);
+
+			// Once the refresh token is created, we save it
+			const newRefreshToken = await MongoConnector.create(tokenModel, {
+				user: user._id,
+				value: refreshToken.token,
+				type: 'refresh',
+				expiresIn: refreshToken.expiresIn,
+				issuedAt: refreshToken.issuedAt,
+			});
+
+			// If both tokens are not created, send error 500
+			if (!newAccessToken && !newRefreshToken) {
+				return response.error(
+					'Token generation failed',
+					'TOKEN_EROR',
+					undefined,
+				);
+			}
+			// If both tokens are created, send success 200
+			return response.success('OK', payload);
 		} catch (err) {
 			response.error(err);
 		}

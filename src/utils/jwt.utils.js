@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const CONFIG = require('../config/config');
 const DateUtils = require('./date.Utils');
-const { inMilliseconds } = require('./date.Utils');
 
 class JWTUtils {
 	//static variables to standardize the errors that can be thrown
@@ -68,6 +67,14 @@ class JWTUtils {
 	static validateActivateToken(token) {
 		return validateToken(token, CONFIG.JWT_ACTIVATE_SECRET);
 	}
+	static genAuthPayload(user) {
+		return {
+			userId: user._id,
+			role: user.role,
+			expiredIn: user.expired, // ? 
+			issuedAt: user.issuedAt, // ? 
+		};
+	}
 }
 
 module.exports = JWTUtils;
@@ -80,7 +87,6 @@ module.exports = JWTUtils;
  * @returns a token
  */
 function generateToken(payload, signature, expiresIn) {
-	// TODO: use the dataUtils function to generate expired dates
 	const data = {
 		token: jwt.sign(payload, signature, { expiresIn: expiresIn }),
 		expiresIn: new Date(new Date().getTime() + expiresIn),
